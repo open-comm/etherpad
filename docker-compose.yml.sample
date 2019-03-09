@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+  etherpad-db:
+    image: mariadb:10
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=DatabaseRootPassword
+      - MYSQL_DATABASE=etherpad
+      - MYSQL_USER=etherpad
+      - MYSQL_PASSWORD=DatabasePassword
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - traefik_network
+
+  etherpad:
+    image: tvelocity/etherpad-lite
+    environment:
+      - ETHERPAD_ADMIN_PASSWORD=EtherpadAdministrationPassword
+      - ETHERPAD_ADMIN_USER=EtherpadAdministrationUserName
+      - ETHERPAD_DB_HOST=etherpad-db
+      - ETHERPAD_DB_USER=etherpad
+      - ETHERPAD_DB_PASSWORD=DatabasePassword
+      - ETHERPAD_DB_NAME=etherpad
+    depends_on:
+      - etherpad-db
+    volumes:
+      - ./config:/opt/etherpad-lite/var
+    labels:
+      - "traefik.backend=etherpad"
+      - "traefik.frontend.rule=Host:your.etherpad.domain"
+      - "traefik.port=9001"
+      - "traefik.frontend.entryPoints=http,https"
+    networks:
+      - traefik_network
+#    ports:
+#      - 9001:9001
+
+
+networks:
+  traefik_network:
+    external:
+      name: traefik_default
+
