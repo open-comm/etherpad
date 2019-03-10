@@ -1,3 +1,16 @@
+## docker-compose configuration file for nextcloud web cloud
+## 
+## name this file docker-compose.yml and edit the following values:
+## 
+## DatabaseRootPassword
+## DatabaseUserPassword
+## EtherpadAdministrationUser
+## EtherpadAdministrationPassword
+## your.nextcloud.domain
+##
+## see more configuration options here:
+## https://hub.docker.com/r/webhippie/etherpad
+
 version: '2'
 
 services:
@@ -6,31 +19,46 @@ services:
     volumes:
       - ./mariadb:/var/lib/mysql
     environment:
+      ##############################################
+      ## Edit the following values                ##
+      ##############################################
       - MYSQL_ROOT_PASSWORD=DatabaseRootPassword
+      - MYSQL_PASSWORD=DatabaseUserPassword
+      ##############################################
       - MYSQL_DATABASE=etherpad
       - MYSQL_USER=etherpad
-      - MYSQL_PASSWORD=DatabasePassword
     labels:
       - "traefik.enable=false"
     networks:
       - traefik_network
 
   etherpad:
-    image: tvelocity/etherpad-lite
+    image: webhippie/etherpad
     environment:
+      ##############################################
+      ## Edit the following values                ##
+      ##############################################
       - ETHERPAD_ADMIN_PASSWORD=EtherpadAdministrationPassword
-      - ETHERPAD_ADMIN_USER=EtherpadAdministrationUserName
+      - ETHERPAD_ADMIN_NAME=EtherpadAdministrationUser
+      ##############################################
+      ## Copy the value from etherpad-db section  ##
+      ##############################################
+      - ETHERPAD_DB_PASSWORD=DatabaseUserPassword
+      ##############################################
       - ETHERPAD_DB_HOST=etherpad-db
-      - ETHERPAD_DB_USER=etherpad
-      - ETHERPAD_DB_PASSWORD=DatabasePassword
-      - ETHERPAD_DB_NAME=etherpad
+      - ETHERPAD_DB_USERNAME=etherpad
+      - ETHERPAD_DB_DATABASE=etherpad
     depends_on:
       - etherpad-db
     volumes:
       - ./config:/opt/etherpad-lite/var
     labels:
-      - "traefik.backend=etherpad"
+      ##############################################
+      ## Edit the following value                 ##
+      ##############################################
       - "traefik.frontend.rule=Host:your.etherpad.domain"
+      ##############################################
+      - "traefik.backend=etherpad"
       - "traefik.port=9001"
       - "traefik.frontend.entryPoints=http,https"
     networks:

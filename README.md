@@ -6,7 +6,9 @@ collaborative web service via docker-compose. It is configured to be
 accessible via https via the traefik web proxy.
 
 Etherpad Lite is a collaborative online editor.
-https://etherpad.org/
+
+* Etherpad web page: https://etherpad.org/
+* Etherpad docker configuration options: https://hub.docker.com/r/webhippie/etherpad
 
 
 Installation
@@ -35,14 +37,7 @@ Usage
 
 ```
 # start Etherpad Lite
-## please be aware that the data base container needs to be fully started
-## before starting the Etherpad Lite container
-## 
-## docker-compose up -d etherpad-db
-## sleep 10
-## docker-compose up -d etherpad
-## 
-./start.sh
+docker-compose up -d
 
 # stop Etherpad Lite
 docker-compose down
