@@ -58,7 +58,6 @@ services:
       ##############################################
       - "traefik.frontend.rule=Host:your.etherpad.domain"
       ##############################################
-      - "traefik.backend=etherpad"
       - "traefik.port=9001"
       - "traefik.frontend.entryPoints=http,https"
     networks:
