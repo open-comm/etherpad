@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  pad-db:
+    image: mariadb:10
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=etherpad
+      - MYSQL_USER=etherpad
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - traefik_network
+
+  pad:
+    image: webhippie/etherpad
+    environment:
+      - ETHERPAD_ADMIN_PASSWORD=${ETHERPAD_ADMIN_PASSWORD}
+      - ETHERPAD_ADMIN_NAME=${ETHERPAD_ADMIN_NAME}
+      - ETHERPAD_DB_HOST=pad-db
+      - ETHERPAD_DB_USERNAME=etherpad
+      - ETHERPAD_DB_PASSWORD=${MYSQL_PASSWORD}
+      - ETHERPAD_DB_DATABASE=etherpad
+    depends_on:
+      - pad-db
+    volumes:
+      - ./config:/opt/etherpad-lite/var
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=9001"
+      - "traefik.http.routers.${ROUTERNAME}.rule=Host(${DOMAIN})"
+      - "traefik.http.routers.${ROUTERNAME}.entrypoints=websecure"
+      - "traefik.http.routers.${ROUTERNAME}.tls.certresolver=myresolver"
+    networks:
+      - traefik_network
+#    ports:
+#      - 9001:9001
+
+
+networks:
+  traefik_network:
+    external:
+      name: traefik_default
+

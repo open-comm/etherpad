@@ -1,5 +1,4 @@
-Etherpad Configuration
-======================
+# Etherpad Configuration
 
 This repository contains a ready to use  configuration for an Etherpad Lite
 collaborative web service via docker-compose. It is configured to be
@@ -11,19 +10,20 @@ Etherpad Lite is a collaborative online editor.
 * Etherpad docker configuration options: https://hub.docker.com/r/webhippie/etherpad
 
 
-Installation
-------------
+## Installation
 
 ```
 # clone repository
-git clone git@gitlab.wachter-jud.net:docker/etherpad.git
+git clone https://git.open-communication.net/open-communication/docker/etherpad.git
 
-# copy and edit the sample configuration file
+# move into project folder
 cd etherpad
-cp docker-compose.yml.sample docker-compose.yml
+
+# copy and edit the configuration file
+cp sample.env .env
 ```
 
-Edit docker-compose.yml and change the following values:
+Edit `.env` configuration file and change the following values:
 
 * `DatabaseRootPassword` create a new safe password
 * `DatabasePassword` create a new safe password
@@ -32,8 +32,7 @@ Edit docker-compose.yml and change the following values:
 * `your.etherpad.domain` the domain name under which this pad will be available
 
 
-Usage
------
+## Usage
 
 ```
 # start Etherpad Lite
